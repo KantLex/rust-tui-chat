@@ -26,5 +26,28 @@ impl Ui {
         Ok(Self { terminal })
     }
 
+    pub fn draw(&mut self, input: &str, messages: &[String]) -> Result<(), Error> {
+        self.terminal.draw(|f| {
+            let chunks = Layout::default()
+                .direction(Direction::Vertical)
+                .margin(1)
+                .constraints(
+                    [
+                        Constraint::Percentage(80),
+                        Constraint::Percentage(20),
+                    ]
+                    .as_ref(),
+                )
+                .split(f.size());
+
+            let messages_block = Block::default().title("Chat").borders(Borders::ALL);
+            let input_block = Block::default().title("Input").borders(Borders::ALL);
+
+            f.render_widget(messages_block, chunks[0]);
+            f.render_widget(Paragraph::new(input), chunks[1]);
+        })?;
+        Ok(())
+    }
+
     // ...
 }
